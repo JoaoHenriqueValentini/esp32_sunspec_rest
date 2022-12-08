@@ -80,32 +80,74 @@ model *init_model_1()
     device_addres->next = NULL; // TODO: apontar para o ponto correto
     set_m1_p_device_adress_value("1");
 
-    // "desc": "Manufacturer specific value (32 chars)",
-    // "label": "Serial Number",
-    // "mandatory": "M",
-    // "name": "SN",
-    // "size": 16,
-    // "static": "S",
-    // "type": "string"
+    
+    
+    //"desc": "Force even alignment",
+    //"name": "Pad",
+    //"size": 1,
+    //"static": "S",
+    //"type": "pad"
 
-                                    // char *name, point_type type, int size)
+    point *Pad = create_point("Pad", ?, 1);
+    Pad->desc = allocate_and_fill("Force even alignment");
+    Pad->label = allocate_and_fill("Pad");
+    Pad->_static = st_S;
+    Pad->get_value = get_m1_p_Pad_value;
+    
+    
+     //"access": "RW",
+     //"desc": "Modbus device address",
+     //"label": "Device Address",
+     //"name": "DA",
+     //"size": 1,
+     //"type": "uint16"
+    
+    
+    point *RW = create_point("DA", pt_uint16, 1);
+    RW->desc = allocate_and_fill("RW");
+    RW->label = allocate_and_fill("RW");
+    RW->_static = st_S;
+    RW->get_value = get_m1_p_RW_value;
+    RW->next = Pad;
+    
+                                 
     point *serial_number = create_point("SN", pt_string, 16);
     serial_number->desc = allocate_and_fill("Manufacturer specific value (32 chars)");
     serial_number->label = allocate_and_fill("Serial Number");
     serial_number->_mandatory = mt_M;
     serial_number->_static = st_S;
     serial_number->get_value = get_m1_p_serial_number_value;
-    serial_number->next = device_addres;
+    serial_number->next = RW;
     
-
-
+    point *Version = create_point("Vr", pt_string, 8);
+    Version->desc = allocate_and_fill("Manufacturer specific value (16 chars)");
+    Version->label = allocate_and_fill("Version");
+    Version->_static = st_S;
+    Version->get_value = get_m1_p_Version_value;
+    Version->next = serial_number;
+    
+    point *Options = create_point("Opt", pt_string, 8);
+    Options->desc = allocate_and_fill("Manufacturer specific value (16 chars)");
+    Options->label = allocate_and_fill("Options");
+    Options->_static = st_S;
+    Options->get_value = get_m1_p_Options_value;
+    Options->next = Version;
+    
+    point *Model = create_point("Md", pt_string, 16);
+    Model->desc = allocate_and_fill("Manufacturer specific value (32 chars)");
+    Model->label = allocate_and_fill("Model");
+    Model->_mandatory = mt_M;
+    Model->_static = st_S;
+    Model->get_value = get_m1_p_Model_value;
+    Model->next = Options;
+    
     point *manufacturer = create_point("Mn", pt_string, 16);
     manufacturer->desc = allocate_and_fill("Well known value registered with SunSpec for compliance");
     manufacturer->label = allocate_and_fill("Manufacturer");
     manufacturer->_mandatory = mt_M;
     manufacturer->_static = st_S;
     manufacturer->get_value = get_m1_p_manufacturer_value;
-    manufacturer->next = device_addres;
+    manufacturer->next = Model;
 
     point *md_length = create_point("L", pt_uint16, 1);
     md_length->desc = allocate_and_fill("Model length");
